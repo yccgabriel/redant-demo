@@ -36,7 +36,7 @@ class App extends React.Component {
 		return (
       <BootstrapTable data={ this.state.rows }>
           <TableHeaderColumn dataField='avatar_url' dataFormat={this.avatarFormatter} isKey={true}>Avatar</TableHeaderColumn>
-          <TableHeaderColumn dataField='login'>Login Name</TableHeaderColumn>
+          <TableHeaderColumn dataField='login' dataSort={true}>Login Name</TableHeaderColumn>
           <TableHeaderColumn dataField='type'>User Type</TableHeaderColumn>
       </BootstrapTable>
 		);
