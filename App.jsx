@@ -16,6 +16,7 @@ class App extends React.Component {
 	constructor() {
 		super();
 		this.state={rows:[]};
+    this.state.displayAdmins = true;
 	}
 
 	componentDidMount() {
@@ -40,13 +41,28 @@ class App extends React.Component {
     }
   }
 
+  filterSiteAdmins() {
+    if(this.state.displayAdmins === true){
+      this.refs.admin.applyFilter('true');
+      this.state.displayAdmins = false;
+    } else{
+      this.refs.admin.applyFilter('');
+      this.state.displayAdmins = true;
+    }
+
+  }
+
 	render() {
 		return (
-      <BootstrapTable data={ this.state.rows }>
+      <div>
+        <button className='btn btn-primary' onClick={this.filterSiteAdmins.bind(this)}>Include site admins</button>
+        <BootstrapTable data={ this.state.rows }>
           <TableHeaderColumn dataField='avatar_url' dataFormat={this.avatarFormatter} isKey={true} dataSort={true} sortFunc={this.sortById}>Avatar</TableHeaderColumn>
           <TableHeaderColumn dataField='login' dataSort={true}>Login Name</TableHeaderColumn>
           <TableHeaderColumn dataField='type'>User Type</TableHeaderColumn>
-      </BootstrapTable>
+          <TableHeaderColumn dataField='site_admin' ref='admin' filter={{type:'TextFilter', delay:1000}} hidden={true}>Site Admin</TableHeaderColumn>
+        </BootstrapTable>
+      </div>
 		);
 	}
 }
