@@ -32,10 +32,18 @@ class App extends React.Component {
     );
   }
 
+  sortById(a, b, order){
+    if (order === 'desc') {
+      return a.id - b.id;
+    } else {
+      return b.id - a.id;
+    }
+  }
+
 	render() {
 		return (
       <BootstrapTable data={ this.state.rows }>
-          <TableHeaderColumn dataField='avatar_url' dataFormat={this.avatarFormatter} isKey={true}>Avatar</TableHeaderColumn>
+          <TableHeaderColumn dataField='avatar_url' dataFormat={this.avatarFormatter} isKey={true} dataSort={true} sortFunc={this.sortById}>Avatar</TableHeaderColumn>
           <TableHeaderColumn dataField='login' dataSort={true}>Login Name</TableHeaderColumn>
           <TableHeaderColumn dataField='type'>User Type</TableHeaderColumn>
       </BootstrapTable>
