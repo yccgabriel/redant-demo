@@ -2,21 +2,14 @@ import React from 'react';
 import 'whatwg-fetch';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 
-const products = [];
 
-function addProducts(quantity) {
-  const startId = products.length;
-  for (let i = 0; i < quantity; i++) {
-    const id = startId + i;
-    products.push({
-      id: id,
-      name: 'Item name ' + id,
-      price: 2100 + i
-    });
+class Avatar extends React.Component{
+  render() {
+    return (
+      <img src={this.props.url} />
+    );
   }
 }
-
-addProducts(5);
 
 class App extends React.Component {
 	constructor() {
@@ -30,9 +23,14 @@ class App extends React.Component {
 		.then(rows=>this.setState({rows}));
 	}
 
+  avatarFormatter(cell, row){
+    return <Avatar url={cell}/>;
+  }
+
 	render() {
 		return (
       <BootstrapTable data={ this.state.rows }>
+          <TableHeaderColumn dataField='avatar_url' dataFormat={this.avatarFormatter}>Avatar</TableHeaderColumn>
           <TableHeaderColumn dataField='id' isKey={ true }>User ID</TableHeaderColumn>
           <TableHeaderColumn dataField='login'>Login Name</TableHeaderColumn>
           <TableHeaderColumn dataField='type'>User Type</TableHeaderColumn>
