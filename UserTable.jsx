@@ -3,12 +3,51 @@ import 'whatwg-fetch';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import Avatar from 'react-avatar';
 
+class CheckboxFilter extends React.Component {
+  constructor(props) {
+    super(props);
+    this.filter = this.filter.bind(this);
+    this.isFiltered = this.isFiltered.bind(this);
+  }
+
+  filter(event) {
+    if (!this.refs.okCheckbox.checked) {
+      // all checkboxes are checked means we want to remove the filter for this column
+      this.props.filterHandler();
+    } else {
+      this.props.filterHandler({ callback: this.isFiltered });
+    }
+  }
+
+  isFiltered(targetValue) {
+    if (targetValue === true) {
+      return (this.refs.okCheckbox.checked);
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        <input ref='okCheckbox' type='checkbox' className='filter' onChange={ this.filter } defaultChecked={ false } /><label>{ this.props.textOK }</label>
+      </div>
+    );
+  }
+}
+
+CheckboxFilter.propTypes = {
+  filterHandler: React.PropTypes.func.isRequired,
+  textOK: React.PropTypes.string
+};
+
+CheckboxFilter.defaultProps = {
+  textOK: 'true',
+};
+
 class UserTable extends React.Component {
 
   constructor() {
     super();
     this.state={rows:[]};
-    this.state.displayAdmins = true;
   }
 
   componentDidMount() {
@@ -20,9 +59,18 @@ class UserTable extends React.Component {
   avatarFormatter(cell, row){
     return (
       <a href={row.html_url}>
-        <Avatar src={cell} round={true} name={row.login}/>
+        <Avatar src={cell} round={true} name={row.login} size="50"/>
       </a>
     );
+  }
+
+  siteAdminFormatter(cell, row){
+    if(cell === true){
+      return <span className="glyphicon glyphicon-ok"></span> ;
+    }
+    else {
+      return <span className="glyphicon glyphicon-remove"></span> ;
+    }
   }
 
   sortById(a, b, order){
@@ -33,26 +81,47 @@ class UserTable extends React.Component {
     }
   }
 
-  filterSiteAdmins() {
-    if(this.state.displayAdmins === true){
-      this.refs.admin.applyFilter('true');
-      this.state.displayAdmins = false;
-    } else{
-      this.refs.admin.applyFilter('');
-      this.state.displayAdmins = true;
-    }
+  getCustomFilter(filterHandler, customFilterParameters) {
+    return (
+      <CheckboxFilter filterHandler={ filterHandler } textOK={ customFilterParameters.textOK } />
+    );
+  }
 
+  userControlButtons(cell, row){
+    var buttonStyle = {
+      paddingLeft: 15,
+      paddingRight: 15,
+      marginLeft: 2,
+      marginRight: 2
+    };
+
+    return (
+      <div className="hidden-sm hidden-xs">
+        <button className="btn btn-primary" style={buttonStyle}>
+          <span className="glyphicon glyphicon-eye-open"></span>
+          <div>View</div>
+        </button>
+        <button className="btn btn-warning" style={buttonStyle}>
+          <span className="glyphicon glyphicon-lock"></span>
+          <div>Block</div>
+        </button>
+        <button className="btn btn-danger" style={buttonStyle}>
+          <span className="glyphicon glyphicon-remove"></span>
+          <div>Block</div>
+        </button>
+      </div>
+    );
   }
 
   render() {
     return (
       <div>
-        <button className='btn btn-primary' onClick={this.filterSiteAdmins.bind(this)}>Include site admins</button>
-        <BootstrapTable data={ this.state.rows } striped={false} hover={true}>
-          <TableHeaderColumn dataField='avatar_url' dataFormat={this.avatarFormatter} isKey={true} dataSort={true} sortFunc={this.sortById} width='100'>Avatar</TableHeaderColumn>
-          <TableHeaderColumn dataField='login' dataSort={true} width='140'>Login Name</TableHeaderColumn>
-          <TableHeaderColumn dataField='type'>User Type</TableHeaderColumn>
-          <TableHeaderColumn dataField='site_admin' ref='admin' filter={{type:'TextFilter', delay:1000}} hidden={true}>Site Admin</TableHeaderColumn>
+        <BootstrapTable data={ this.state.rows } striped={false} hover={true} className="table-striped">
+          <TableHeaderColumn dataField='avatar_url' dataFormat={this.avatarFormatter} isKey={true} dataSort={true} sortFunc={this.sortById}>ID</TableHeaderColumn>
+          <TableHeaderColumn dataField='login' dataSort={true}>Login Name</TableHeaderColumn>
+          <TableHeaderColumn dataField='type' ref="type" filter={ { type: 'TextFilter' } }>User Type</TableHeaderColumn>
+          <TableHeaderColumn dataField='site_admin' ref='admin' filter={{type:'CustomFilter', getElement: this.getCustomFilter, customFilterParameters: { textOK: 'only' }}} dataFormat={this.siteAdminFormatter}>Admin</TableHeaderColumn>
+          <TableHeaderColumn dataFormat={this.userControlButtons} className="hidden-sm hidden-xs" columnClassName="hidden-sm hidden-xs"></TableHeaderColumn>
         </BootstrapTable>
       </div>
     );
