@@ -119,7 +119,7 @@ class UserTable extends React.Component {
         <BootstrapTable data={ this.state.rows } striped={false} hover={true} className="table-striped">
           <TableHeaderColumn dataField='avatar_url' dataFormat={this.avatarFormatter} isKey={true} dataSort={true} sortFunc={this.sortById}>ID</TableHeaderColumn>
           <TableHeaderColumn dataField='login' dataSort={true}>Login Name</TableHeaderColumn>
-          <TableHeaderColumn dataField='type'>User Type</TableHeaderColumn>
+          <TableHeaderColumn dataField='type' ref="type" filter={ { type: 'TextFilter' } }>User Type</TableHeaderColumn>
           <TableHeaderColumn dataField='site_admin' ref='admin' filter={{type:'CustomFilter', getElement: this.getCustomFilter, customFilterParameters: { textOK: 'only' }}} dataFormat={this.siteAdminFormatter}>Admin</TableHeaderColumn>
           <TableHeaderColumn dataFormat={this.userControlButtons} className="hidden-sm hidden-xs" columnClassName="hidden-sm hidden-xs"></TableHeaderColumn>
         </BootstrapTable>
