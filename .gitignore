@@ -27,3 +27,7 @@ chrome-user-data
 .idea
 *.iml
 .vscode
+
+
+index.js
+index.js.map
