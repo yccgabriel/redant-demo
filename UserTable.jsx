@@ -87,6 +87,32 @@ class UserTable extends React.Component {
     );
   }
 
+  userControlButtons(cell, row){
+    var buttonStyle = {
+      paddingLeft: 15,
+      paddingRight: 15,
+      marginLeft: 2,
+      marginRight: 2
+    };
+
+    return (
+      <div>
+        <button className="btn btn-primary" style={buttonStyle}>
+          <span className="glyphicon glyphicon-eye-open"></span>
+          <div>View</div>
+        </button>
+        <button className="btn btn-warning" style={buttonStyle}>
+          <span className="glyphicon glyphicon-lock"></span>
+          <div>Block</div>
+        </button>
+        <button className="btn btn-danger" style={buttonStyle}>
+          <span className="glyphicon glyphicon-remove"></span>
+          <div>Block</div>
+        </button>
+      </div>
+    );
+  }
+
   render() {
     return (
       <div>
@@ -94,7 +120,8 @@ class UserTable extends React.Component {
           <TableHeaderColumn dataField='avatar_url' dataFormat={this.avatarFormatter} isKey={true} dataSort={true} sortFunc={this.sortById} width='50'>ID</TableHeaderColumn>
           <TableHeaderColumn dataField='login' dataSort={true} width='140'>Login Name</TableHeaderColumn>
           <TableHeaderColumn dataField='type'>User Type</TableHeaderColumn>
-          <TableHeaderColumn dataField='site_admin' ref='admin' filter={{type:'CustomFilter', getElement: this.getCustomFilter, customFilterParameters: { textOK: 'yes' }}} dataFormat={this.siteAdminFormatter}>Only Site Admins</TableHeaderColumn>
+          <TableHeaderColumn dataField='site_admin' ref='admin' filter={{type:'CustomFilter', getElement: this.getCustomFilter, customFilterParameters: { textOK: 'only' }}} dataFormat={this.siteAdminFormatter}>Admin</TableHeaderColumn>
+          <TableHeaderColumn dataFormat={this.userControlButtons}></TableHeaderColumn>
         </BootstrapTable>
       </div>
     );
